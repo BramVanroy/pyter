@@ -57,6 +57,10 @@ Please type::
 ReleaseNote
 ===========
 
+v0.3
+   * only kept essentials for use as module (removed CLI)
+   * turned it into Python 3 scripts
+
 v0.2.2.1
    * bugfix release
 

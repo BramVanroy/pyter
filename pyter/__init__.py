@@ -1,8 +1,4 @@
-# -*- coding:utf-8 -*-
-from __future__ import division, print_function
-""" Copyright (c) 2011 Hiroyuki Tanaka. All rights reserved."""
 import itertools as itrt
-from pyter import util
 
 
 def ter(inputwords, refwords):
@@ -19,7 +15,7 @@ def ter(inputwords, refwords):
 
 
 def _ter(iwords, rwords, mtd):
-    """ Translation Erorr Rate core function """
+    """ Translation Edit Rate core function """
     err = 0
     # print('[I]', u' '.join(iwords))
     # print('[R]', u' '.join(rwords))
@@ -46,21 +42,22 @@ def _shift(iwords, rwords, mtd):
         shifted_words = iwords[:isp] + iwords[isp + length:]
         shifted_words[rsp:rsp] = iwords[isp:isp + length]
         scores.append((pre_score - mtd(shifted_words), shifted_words))
+
     if not scores:
-        return (0, iwords)
+        return 0, iwords
+
     scores.sort()
     return scores[-1]
 
 
 def _findpairs(ws1, ws2):
-    u""" yield the tuple of (ws1_start_point, ws2_start_point, length)
+    """ yield the tuple of (ws1_start_point, ws2_start_point, length)
     So ws1[ws1_start_point:ws1_start_point+length] == ws2[ws2_start_point:ws2_start_point+length]
     """
     for i1, i2 in itrt.product(range(len(ws1)), range(len(ws2))):
         if i1 == i2:
-            continue  # take away if there is already in the same position
+            continue
         if ws1[i1] == ws2[i2]:
-            # counting
             length = 1
             for j1, j2 in zip(range(i1 + 1, len(ws1)), range(i2 + 1, len(ws2))):
                 if ws1[j1] == ws2[j2]:
@@ -75,7 +72,7 @@ def _gen_matrix(col_size, row_size, default=None):
 
 
 def edit_distance(s, t):
-    """It's same as the Levenshtein distance"""
+    """ Levenshtein distance"""
     l = _gen_matrix(len(s) + 1, len(t) + 1, None)
     l[0] = [x for x, _ in enumerate(l[0])]
     for x, y in enumerate(l):
@@ -88,12 +85,6 @@ def edit_distance(s, t):
 
 
 class CachedEditDistance(object):
-    u""" 編集距離のキャッシュ版
-    一回計算した途中結果を保存しておいて再利用する
-    以前計算したリストをtrie木で保存して、重複する演算を省略する
-    trieはネストした辞書で表現し、値に[次の辞書, キャッシュされた値]の長さ２のリストを用いる
-    比較する対象はリスト化されている必要がある。
-    """
     def __init__(self, rwords):
         self.rwds = rwords
         self._cache = {}
@@ -102,19 +93,19 @@ class CachedEditDistance(object):
     def __call__(self, iwords):
         start_position, cached_score = self._find_cache(iwords)
         score, newly_created_matrix = self._edit_distance(iwords, start_position, cached_score)
-        self._add_cache(iwords, newly_created_matrix)  # もう一度たどって、キャッシュがないノードにキャッシュを挿入していく
+        self._add_cache(iwords, newly_created_matrix)
         return score
 
     def _edit_distance(self, iwords, spos, cache):
-        u""" sposが0の場合はキャッシュなし。
-        """
         if cache is None:
             cache = [tuple(range(len(self.rwds) + 1))]
         else:
-            cache = [cache] # 一つのrowにする
+            cache = [cache]
+
         l = cache + [list(self.list_for_copy) for _ in range(len(iwords) - spos)]
-        # 先頭はキャッシュなので飛ばす。iwordsはsposから、lは1から計算
+
         assert len(l) - 1 == len(iwords) - spos
+
         for i, j in itrt.product(range(1, len(iwords) - spos + 1), range(len(self.rwds) + 1)):
             if j == 0:
                 l[i][j] = l[i - 1][j] + 1
@@ -136,7 +127,7 @@ class CachedEditDistance(object):
             value = node[word]
             if value[1] is None:
                 value[1] = tuple(row)
-            node = value[0]  # nodeを一つ掘り下げる(drill down)
+            node = value[0]
 
     def _find_cache(self, iwords):
         node = self._cache
@@ -144,54 +135,8 @@ class CachedEditDistance(object):
         for idx, word in enumerate(iwords):
             if word in node:
                 start_position = idx + 1
-                node, row = node[word] # rowに値を入れておいて、
+                node, row = node[word]
             else:
                 break
+
         return start_position, row
-
-
-def parse_args():
-    import argparse             # new in Python 2.7!!
-    parser = argparse.ArgumentParser(
-        description='Translation Error Rate Evaluator',
-        epilog="If you have an UnicodeEncodeError, try to set 'PYTHONIOENCODING' to your environment variables."
-        )
-    parser.add_argument('-r', '--ref', help='Reference file', required=True)
-    parser.add_argument('-i', '--input', help='Input(test) file', required=True)
-    parser.add_argument('-v', '--verbose', help='Show scores of each sentence.',
-                        action='store_true', default=False)
-    parser.add_argument('-l', '--lang', choices=['ja', 'en'], default='en', help='Language')
-    parser.add_argument('--force-token-mode', action='store_true', default=False, help='Use a space separated word as a unit')
-    return parser.parse_args()
-
-
-def main():
-    import codecs
-    import sys
-    import itertools
-    import math
-    args = parse_args()
-    ilines = [util.preprocess(x, args.lang) for x in codecs.open(args.input, 'r', 'utf-8').readlines()]
-    rlines = [util.preprocess(x, args.lang) for x in codecs.open(args.ref, 'r', 'utf-8').readlines()]
-    if len(ilines) != len(rlines):
-        print("Error: input file has {0} lines, but reference has {1} lines.".format(len(ilines), len(rlines)))
-        sys.exit(1)
-    scores = []
-    for lineno, (rline, iline) in enumerate(itertools.izip(ilines, rlines), start=1):
-        if args.force_token_mode:
-            rline, iline = rline.split(), iline.split()
-        else:
-            rline, iline = util.split(rline, args.lang), util.split(iline, args.lang)
-        # iline, rline are list object
-        score = ter(iline, rline)
-        scores.append(score)
-        if args.verbose:
-            print("Sentence {0}: {1:.4f}".format(lineno, score))
-    average = sum(scores) / len(scores)
-    variance = sum((x - average) ** 2 for x in scores) / len(scores)
-    stddev = math.sqrt(variance)
-    print("Average={0:.4f}, Variance={1:.4f}, Standard Deviatioin={2:.4f}".format(average, variance, stddev))
-
-
-if __name__ == '__main__':
-    main()
