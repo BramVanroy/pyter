@@ -12,7 +12,7 @@ Checkout the repository
 
 .. code-block:: bash
 
-    git clone git://github.com/BramVanroy/pyter.git
+    git clone https://github.com/BramVanroy/pyter.git
     cd pyter
     pip install -e .
 
