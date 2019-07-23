@@ -1,6 +1,7 @@
 from setuptools import setup
 import os
 
+
 # Utility function to read the README file.
 # Used for the long_description.  It's nice, because now 1) we have a top level
 # README file and 2) it's easier to type in the README file than to put a raw
@@ -8,18 +9,16 @@ import os
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
-install_requires = ['argparse']
+
 setup(name='pyter',
       version='0.3',
-      description='Simple library to evaluate the Translation Error Rate',
+      description='Simple library to evaluate the Translation Edit Rate',
       long_description=read('README.rst'),
       author='Hiroyuki Tanaka, Bram Vanroy',
       author_email='aflc0x@gmail.com',
       url='https://github.com/BramVanroy/pyter',
-      platforms = 'any',
+      platforms='any',
       packages=['pyter'],
-      entry_points=dict(console_scripts=['pyter=pyter:main']),
-      install_requires=install_requires,
       classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Information Technology',
