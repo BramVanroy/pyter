@@ -1,11 +1,15 @@
 from setuptools import setup
 
+with open('README.rst', 'r', encoding='utf-8') as fh:
+    long_description = fh.read()
 
-setup(name='pyter',
+setup(name='pyter3',
       version='0.3',
       description='Simple library to evaluate the Translation Edit Rate',
+      long_description=long_description,
+      long_description_content_type='text/markdown',
       author='Hiroyuki Tanaka, Bram Vanroy',
-      author_email='aflc0x@gmail.com',
+      author_email='afl0x@gmail.com',
       url='https://github.com/BramVanroy/pyter',
       packages=['pyter'],
       license='MIT',

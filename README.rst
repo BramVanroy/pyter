@@ -4,20 +4,17 @@ pyter
 
 pyter is a simple Translation Error Rate evaluation package.
 
-============
+
 Installation
 ============
 
-Checkout the repository
+Download through pip.
 
 .. code-block:: bash
 
-    git clone https://github.com/BramVanroy/pyter.git
-    cd pyter
-    pip install -e .
+    pip install pyter3
 
 
-=====
 Usage
 =====
 
@@ -30,16 +27,16 @@ Usage
     ref = 'SAUDI ARABIA denied THIS WEEK information published in the AMERICAN new york times'.split()
     hyp = 'THIS WEEK THE SAUDIS denied information published in the new york times'.split()
     print(pyter.ter(hyp, ref))
-    # 0.308
+    # 0.308...
 
 
-===========
 ReleaseNote
 ===========
 
 v0.3
    * only kept essentials for use as module (removed CLI)
    * turned it into Python 3 scripts
+   * added to PyPi as pyter3
 
 v0.2.2.1
    * bugfix release
@@ -58,7 +55,7 @@ v0.1.1
 v0.1
    * Initial release
 
-===============
+
 Acknowledgments
 ===============
 
@@ -66,7 +63,7 @@ Based on the original version by user afcl at afcl/pyter_.
 
 .. _pyter: https://github.com/aflc/pyter
 
-=======
+
 License
 =======
 

@@ -2,3 +2,6 @@
 .gitignore
 Pipfile*
 **/__pycache__
+dist
+pyter3.egg-info
+build

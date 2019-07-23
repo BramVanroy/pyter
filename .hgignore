@@ -1,4 +1,0 @@
-syntax: glob
-*.pyc
-__pycache__
-pyter.egg-info
