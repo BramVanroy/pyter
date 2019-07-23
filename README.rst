@@ -2,55 +2,35 @@
 pyter
 =====
 
-pyter is a simple Translation Error Rate evaluation command.
-
-Currentry under development state.
+pyter is a simple Translation Error Rate evaluation package.
 
 ============
 Installation
 ============
-::
 
-  pip install pyter
+Checkout the repository
 
-or checkout the repository::
+.. code-block:: bash
 
-  git clone git://github.com/aflc/pyter.git
-  cd pyter
-  pip install -e .
+    git clone git://github.com/BramVanroy/pyter.git
+    cd pyter
+    pip install -e .
 
 
 =====
 Usage
 =====
 
-------------------------------
-In Python code(Python2.x case)
-------------------------------
-import
+.. code-block:: python
 
->>> import pyter
+    import pyter
 
-To get a TER score, both hypothesis sentence and reference sentence have to a list of word.
+    # To get a TER score, both hypothesis sentence and reference sentence have to be tokenised (a list of words).
 
->>> ref = u'SAUDI ARABIA denied THIS WEEK information published in the AMERICAN new york times'.split()
->>> hyp = u'THIS WEEK THE SAUDIS denied information published in the new york times'.split()
->>> '%.3f' % pyter.ter(hyp, ref)
-'0.308'
-
-If you want to use a character based matching, write a code like that.
-
->>> ref = list(u"Pythonは、より素早く、効果的にシステムとの統合が可能なプログラミング言語です。")
->>> hyp = list(u"Pythonは、より迅速に動作するとより効果的にシステムを統合できるプログラミング言語です。")
->>> '%.3f' % pyter.ter(hyp, ref)
-'0.357'
-
-----------------------
-Command line interface
-----------------------
-Please type::
-
-  pyter --help
+    ref = 'SAUDI ARABIA denied THIS WEEK information published in the AMERICAN new york times'.split()
+    hyp = 'THIS WEEK THE SAUDIS denied information published in the new york times'.split()
+    print(pyter.ter(hyp, ref))
+    # 0.308
 
 
 ===========
@@ -77,6 +57,14 @@ v0.1.1
    * Minor fix, and register to PyPi
 v0.1
    * Initial release
+
+===============
+Acknowledgments
+===============
+
+Based on the original version by user afcl at afcl/pyter_.
+
+.. _pyter: https://github.com/aflc/pyter
 
 =======
 License

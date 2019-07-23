@@ -17,14 +17,8 @@ def ter(inputwords, refwords):
 def _ter(iwords, rwords, mtd):
     """ Translation Edit Rate core function """
     err = 0
-    # print('[I]', u' '.join(iwords))
-    # print('[R]', u' '.join(rwords))
-    # print('[ED]', mtd(iwords))
     while True:
         delta, new_iwords = _shift(iwords, rwords, mtd)
-        # print('[I]', u' '.join(iwords))
-        # print('[R]', u' '.join(rwords))
-        # print('[ED]', mtd(iwords))
         if delta <= 0:
             break
         err += 1
@@ -34,7 +28,7 @@ def _ter(iwords, rwords, mtd):
 
 def _shift(iwords, rwords, mtd):
     """ Shift the phrase pair most reduce the edit_distance
-    Return True shift occurred, else False.
+    Return True if shift occurred, else False.
     """
     pre_score = mtd(iwords)
     scores = []
